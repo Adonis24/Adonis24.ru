@@ -111,9 +111,6 @@ export default function Create({  categories }) {
       >
         {(formik) => (
           <Form>
-           
-        
-        
             <SingularSelect
               name="category"
               value={project.category}

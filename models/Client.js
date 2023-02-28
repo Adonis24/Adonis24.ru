@@ -1,5 +1,4 @@
 import mongoose, { mongo } from "mongoose";
-const { ObjectId } = mongoose.Schema;
 const clientSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -9,12 +8,18 @@ const clientSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  image: {
+   image: {
     type: String,
     required: false,
-    default: "https://res.cloudinary.com/dmhcnhtng/image/upload/v1664642478/992490_b0iqzq.png"
-  },
-});
+   }
+   
+}
+,
+  {
+    timestamps: true,
+  }
+);
 const Client =  mongoose.models.Client || mongoose.model("Client", clientSchema);
 
 export default Client;
+// default: "https://res.cloudinary.com/dmhcnhtng/image/upload/v1664642478/992490_b0iqzq.png"
