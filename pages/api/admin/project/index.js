@@ -31,7 +31,10 @@ handler.post(async (req, res) => {
         details: req.body.details,
         slug: req.body.slug,
         category: req.body.category,
+        client: req.body.client,
         images:req.body.images,
+        dateStart:  ISODate(req.body.dateStart),
+        dateEnd:  ISODate(req.body.dateEnd)
         
       });
       await newProject.save();
@@ -73,7 +76,7 @@ handler.delete(async (req, res) => {
 });
 handler.put(async (req, res) => {
   //try {
-    const { _id, description, category  } = req.body;
+    const { _id, description, category, client,dateStart, dateEnd  } = req.body;
     // console.log(_id+description)
     //db.connectDb();
     // const client = await clientPromise;
@@ -88,14 +91,22 @@ handler.put(async (req, res) => {
    .updateOne(
     {"_id": ObjectId(_id)},
     [
-    { $set: { "description": description, "category": ObjectId(category)} },
+    { $set: { 
+      "description": description,
+       "category": ObjectId(category), 
+       "client": ObjectId(client),
+       "dateStart": new  Date(dateStart),
+       "dateEnd": new Date(dateEnd),
+      }
+  },
     ]
 
   );
   
    res.status(200).send({ message: "Проект успешно обновлен." });//{...res}.matchedCount;
  
- //   const projects = await db.collection("projects")
+ //ISODate($dateStart),   
+ //const projects = await db.collection("projects")
 //   .aggregate([
 //     {$match:
 //          {_id: ObjectId('$_id')}

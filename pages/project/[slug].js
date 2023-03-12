@@ -16,7 +16,7 @@ import Infos from "../../components/projectPage/infos";
 
 //import ProjectsSwiper from "../../components/projectsSwiper";
 
-export  default function ProjectPage({ project,categories }) {
+export  default function ProjectPage({ project,categories,clients }) {
   const [activeImg, setActiveImg] = useState("");
   
   return (
@@ -32,7 +32,7 @@ export  default function ProjectPage({ project,categories }) {
           </div>
             <div className={styles.project__main}> 
            {/* <MainSwiper images={project.images} activeImg={activeImg} />*/}
-            <Infos project={project} categories = {categories} setActiveImg={setActiveImg} />
+            <Infos project={project} categories = {categories} clients ={clients} setActiveImg={setActiveImg} />
           </div>  
         </div>
       </div>
@@ -54,6 +54,11 @@ const {db} = await connectToDatabase();
   //работа с агрегаторами
   const categories = await db
   .collection("categories")
+  .find({})
+  .toArray();
+
+  const clients = await db
+  .collection("clients")
   .find({})
   .toArray();
 
@@ -104,6 +109,7 @@ const {db} = await connectToDatabase();
     {
       project: JSON.parse(JSON.stringify(Object.values(project)[0])),
       categories: JSON.parse(JSON.stringify(categories)),
+      clients: JSON.parse(JSON.stringify(clients))
     }
       //related: JSON.parse(JSON.stringify(related)),
   }

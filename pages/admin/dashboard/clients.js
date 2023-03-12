@@ -6,12 +6,12 @@ import Create from "../../../components/admin/clients/Create";
 import List from "../../../components/admin/clients/List";
 export default function Clients({ clients }) {
 
-  const [data, setClients] = useState(clients);
+  const [_clients, setClients] = useState(clients);
   return (
     <Layout>
       <div>
-        <Create setClients={setClients} db={db} />
-        <List clients={data} setClients={setClients} />
+        <Create setClients={setClients} />
+        <List clients={_clients} setClients={setClients} />
       </div>
     </Layout>
   );

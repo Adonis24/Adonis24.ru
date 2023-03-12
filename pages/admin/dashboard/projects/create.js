@@ -21,6 +21,8 @@ import Details from "../../../../components/admin/createProject/clickToAdd/Detai
 //import { validateCreateProject } from "../../../../utils/validation";
 import dataURItoBlob from "../../../../utils/dataURItoBlob";
 import { uploadImages } from "../../../../requests/upload";
+import ReactDatePicker from "../../../../utils/dataPicker";
+import ReactDatePickerMui from "../../../../utils/dataPickerMui";
 const initialState = {
   name: "",
   description: "",
@@ -28,6 +30,8 @@ const initialState = {
   images: [],
   description_images: [],
   category: "",
+  dateStart: new Date("2021-01-01"),
+  dateEnd: new Date("2021-01-01"),
   details:[],
 
   
@@ -100,6 +104,8 @@ export default function Create({  categories }) {
           brand: project.brand,
           description: project.description,
           category: project.category,
+          dateStart: project.dateStart,
+          dateEnd: project.dateEnd,
           details: [],
           imageInputFile: "",
           styleInout: "",
@@ -129,6 +135,8 @@ export default function Create({  categories }) {
               placholder="Наименование проекта"
               onChange={handleChange}
             />
+             {/* <ReactDatePicker name="dateStart" name2="dateEnd" /> */}
+             <ReactDatePickerMui name="dateStart" name2="dateEnd" /> 
             <AdminInput
               type="text"
               label="Описание проекта"

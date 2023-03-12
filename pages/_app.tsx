@@ -1,11 +1,11 @@
 import "../styles/globals.scss";
 import type { AppProps } from "next/app";
 import { Provider } from "react-redux";
-import {  Pagination } from 'swiper';
-import SwiperCore, { Autoplay } from 'swiper';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/autoplay';
+import { Pagination } from "swiper";
+import SwiperCore, { Autoplay } from "swiper";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/autoplay";
 import "../styles/embla.scss";
 //import { SessionProvider } from "next-auth/react";
 import Head from "next/head";
@@ -16,8 +16,9 @@ import { useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Layout from "../components/Layout";
 const raleway = Raleway({ subsets: ["latin"] });
-// //redux
+// ------dataPicker
 
+// ------redux
 import store from "../store";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
@@ -48,13 +49,14 @@ export default function App({
       </Head>
 
       <Provider store={store}>
-
-      <Layout>
-            <Component {...pageProps} />
-      </Layout>
-   
-        </Provider>
-     
+  
+            
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      
+        
+      </Provider>
     </>
   );
 

@@ -21,11 +21,11 @@ import "swiper/swiper.min.css";
 import Layout from "../../../components/admin/layout";
 //import db from "../../../../utils/db";
 import { useEffect, useState } from "react";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import * as Yup from "yup";
 import { Form, Formik, useField } from "formik";
@@ -42,6 +42,8 @@ import dataURItoBlob from "../../../utils/dataURItoBlob";
 import { uploadImages } from "../../../requests/upload";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import { styled } from "@mui/material/styles";
+import ReactDatePicker from "../../../utils/dataPicker";
+import ReactDatePickerMui from "../../../utils/dataPickerMui";
 
 // };
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
@@ -52,6 +54,7 @@ const AdonisTextArea = ({ label, ...props }) => {
   // useField() returns [formik.getFieldProps(), formik.getFieldMeta()]
   // which we can spread on <input> and alse replace ErrorMessage entirely.
   const [field, meta] = useField(props);
+
   return (
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
@@ -63,35 +66,36 @@ const AdonisTextArea = ({ label, ...props }) => {
   );
 };
 
-  ;
-  const showMessageUpdateProject = () => {
-    toast.success("Проект обновлен", {
-        position: toast.POSITION.TOP_RIGHT
-    })}
-  
-    ;
-export default function Infos({ project, categories }, setActiveImg) {
-  const router = useRouter();
-  const onDeletePhotos = async() => {
- 
-    await axios.request({
-     method:'DELETE',
-     url: "/api/admin/project",
-     data: {...project},
-     // onUploadProgress: ()=>{
-     //   toast.success("Обновляется")
-     // }
-   }).then (
-    toast.success("Удалены фотографии", {
-      position: toast.POSITION.TOP_RIGHT
-  })
-,  
-   )
-   .then( router.push("/admin/dashboard/projects/all",undefined ,{shallow: false }))
+const showMessageUpdateProject = () => {
+  toast.success("Проект обновлен", {
+    position: toast.POSITION.TOP_RIGHT,
+  });
+};
 
-      
-   
-}
+export default function Infos({ project, categories, clients }, setActiveImg) {
+  const router = useRouter();
+  
+  const onDeletePhotos = async () => {
+    await axios
+      .request({
+        method: "DELETE",
+        url: "/api/admin/project",
+        data: { ...project },
+        // onUploadProgress: ()=>{
+        //   toast.success("Обновляется")
+        // }
+      })
+      .then(
+        toast.success("Удалены фотографии", {
+          position: toast.POSITION.TOP_RIGHT,
+        })
+      )
+      .then(
+        router.push("/admin/dashboard/projects/all", undefined, {
+          shallow: false,
+        })
+      );
+  };
   return (
     <Formik
       initialValues={{
@@ -100,103 +104,113 @@ export default function Infos({ project, categories }, setActiveImg) {
         brand: project.brand,
         description: project.description,
         category: project.category,
+        client: project.client,
+        dateStart: project.dateStart,
+        dateEnd: project.dateEnd,
         details: [],
         imageInputFile: "",
         styleInout: "",
       }}
- 
       onSubmit={ async(values, { setSubmitting }) => {
-       await axios.request({
-        method:'PUT',
-        url: "/api/admin/project",
-        data: {...values},
-        // onUploadProgress: ()=>{
-        //   toast.success("Обновляется")
-        // }
-      })
-      .then (
-        showMessageUpdateProject
-      )
-      .then( 
-        router.push("/admin/dashboard/projects/all",undefined ,{shallow: false })
-        )
+       alert(JSON.stringify({ ...values}, null, 2))
+        await axios
+          .request({
+            method: "PUT",
+            url: "/api/admin/project",
+            data: { ...values},
+            // onUploadProgress: ()=>{
+            //   toast.success("Обновляется")
+            // }
+          })
+          .then(showMessageUpdateProject)
+          .then(
+            router.push("/admin/dashboard/projects/all", undefined, {
+              shallow: false,
+            })
+          );
 
-      setSubmitting(false);
-         
-      }
-    }
-      
+        setSubmitting(false);
+      }}
     >
-     {({
-              values,
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              isSubmitting,
-            }) => ( 
-      <Form  onSubmit={handleSubmit} noValidate>
+      {({ values, setFieldValue,handleChange, handleBlur, handleSubmit, isSubmitting }) => (
+        <Form onSubmit={handleSubmit} noValidate>
           <SingularSelect
-              name="category"
-              value={project.category}
-              placeholder="Категория бизнеса"
-              data={categories}
-              header=""
-              handleChange={handleChange}
-             
-            />
-        <AdonisTextArea label="" name="name" rows="3" />
-        <AdonisTextArea label="" name="description" rows="6" />
+            name="category"
+            value={project.category}
+            placeholder="Категория бизнеса"
+            data={categories}
+            header=""
+            handleChange={handleChange}
+          />
+          <SingularSelect
+            name="client"
+            value={project.client}
+            placeholder="Клиент"
+            data={clients}
+            header=""
+            handleChange={handleChange}
+          />
 
-        <ToastContainer />
         
-  
-        <Swiper
-        effect={"coverflow"}
-        grabCursor={true}
-        centeredSlides={true}
-        slidesPerView={"auto"}
-        pagination={{
-          clickable: true,
-        }}
-  
-        navigation={true}
-        modules={[Keyboard, Pagination, Navigation]}
-        coverflowEffect={{
-          rotate: 50,
-          stretch: 0,
-          depth: 100,
-          modifier: 1,
-          slideShadows: true,
-        }}
-      
-        className="mySwiper"
-      >
+           <ReactDatePickerMui  
+            name="dateStart"  name2="dateEnd" 
+            dateStart = {values.dateStart}
+            dateEnd={values.dateEnd}
+            setFieldValue={setFieldValue}
+            />  
+          <AdonisTextArea label="" name="name" rows="3" />
+          <AdonisTextArea label="" name="description" rows="6" />
+
+          <ToastContainer />
+
+          <Swiper
+            effect={"coverflow"}
+            grabCursor={true}
+            centeredSlides={true}
+            slidesPerView={"auto"}
+            pagination={{
+              clickable: true,
+            }}
+            navigation={true}
+            modules={[Keyboard, Pagination, Navigation]}
+            coverflowEffect={{
+              rotate: 50,
+              stretch: 0,
+              depth: 100,
+              modifier: 1,
+              slideShadows: true,
+            }}
+            className="mySwiper"
+          >
             {project.images.map((p, i) => (
               <SwiperSlide key={`${p.url}_${i}`} data-swiper-autoplay="2000">
-        
-                  <img className="w-100 p-1 rounded" src={p.url} alt="" />
-               
-              
+                <img className="w-100 h-80 p-1 rounded" src={p.url} alt="" />
               </SwiperSlide>
             ))}
-    
-          </Swiper >
-          <p/>
+          </Swiper>
+          <p />
 
-<button  style={{margin:10}} className="btn btn-primary"  type="submit">
-Обновить{" "}
-</button>
+          <button
+            style={{ margin: 10 }}
+            className="btn btn-primary"
+            type="submit"
+          >
+            Обновить{" "}
+          </button>
 
-
-<button  onClick={onDeletePhotos} style={{margin:10}} name="foto" className='btn btn-primary' type="button">
-Удалить проект{" "}
-</button>
-
-      </Form>
-            )}
+          <button
+            onClick={onDeletePhotos}
+            style={{ margin: 10 }}
+            name="foto"
+            className="btn btn-primary"
+            type="button"
+          >
+            Удалить проект{" "}
+          </button>
+        </Form>
+      )}
     </Formik>
-
-
+  //* <ReactDatePicker name="dateStart" name2="dateEnd" /> */}
     // <form onSubmit={updateProjectHandler}>
     // <div className={styles.infos}>
     //   <DialogModal />
@@ -478,4 +492,4 @@ const router = useRouter();
               </SwiperSlide>
             ))}
           </Swiper>
-    */      
+    */

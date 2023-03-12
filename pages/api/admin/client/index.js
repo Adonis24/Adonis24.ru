@@ -12,7 +12,7 @@ const handler = nc();
 handler.post(async (req, res) => {
   //console.log(JSON.parse(JSON.stringify(req)));
   try {
-    const { name, description } = req.body;
+    const { name, description, image } = req.body;
     // const client = await clientPromise;
     // const db = await client.db("Auth");
     // const test = await Client.findOne({ name });
@@ -31,6 +31,8 @@ handler.post(async (req, res) => {
       await db.collection('clients').insertOne({
         name,
         description,
+        image
+        
       });
     }
     res.json({
@@ -48,21 +50,21 @@ handler.post(async (req, res) => {
 
 handler.delete(async (req, res) => {
   //try {
-  const { _id } = req.body;
+  const { id } = req.body;
   const { db } = await connectToDatabase();
-  await db.collection("clients").findOneAndDelete({ _id: ObjectId(_id) });
+  await db.collection('clients').findOneAndDelete({ _id: ObjectId(id) });
 
   res.status(200).send({ message: "Клиент успешно удален." }); //{...res}.matchedCount;
 });
 handler.put(async (req, res) => {
   //try {
-  const { _id, name, description } = req.body;
+  const { _id, name, description, image} = req.body;
 
   const { db } = await connectToDatabase();
   await db
-    .collection("clients")
+    .collection('clients')
     .updateOne({ _id: ObjectId(_id) }, [
-      { $set: { description: description, name: name } },
+      { $set: { description: description, name: name , image:image } },
     ]);
 
   res.status(200).send({ message: "Клиент успешно обновлен." }); //{...res}.matchedCount;

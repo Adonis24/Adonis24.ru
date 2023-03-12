@@ -1,22 +1,30 @@
 import axios from "axios";
 import { useRef } from "react";
 import { useState } from "react";
+import { useRouter } from "next/router";
 import { AiFillDelete, AiTwotoneEdit } from "react-icons/ai";
 import { toast } from "react-toastify";
 import styles from "./styles.module.scss";
+import AvatarUploaded from "../../../utils/imageUpload";
 export default function ListItem({ client, setClients }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const input = useRef(null);
+  const router = useRouter();
   const handleRemove = async (id) => {
+  // alert(JSON.stringify( id , null, 2))
     try {
-      const { data } = await axios.delete("/api/admin/client", {
-        data: { id },
-      });
-      setClients(data.clients);
-      toast.success(data.message);
+      const res = await axios.delete("/api/admin/client",{data:{id}})
+      .then(
+         router.push("/admin/dashboard/clients",undefined ,{shallow: false })
+      )
+        
+      // setClients(clients.filter(newClient => newClient._id!==id))
+        toast.success(res.data.message);
+        
+
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.message);
     }
   };
   const handleUpdate = async (id) => {
@@ -25,15 +33,17 @@ export default function ListItem({ client, setClients }) {
         id,
         name,
       });
-      setClient(data.clients);
+      setClients(data.clients);
       setOpen(false);
       toast.success(data.message);
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.message);
     }
   };
   return (
     <li className={styles.list__item}>
+       <AvatarUploaded logo={client.image}
+          /> 
       <input
         className={open ? styles.open : ""}
         type="text"
@@ -48,7 +58,7 @@ export default function ListItem({ client, setClients }) {
             className={styles.btn}
             onClick={() => handleUpdate(client._id)}
           >
-            Save
+            Сохранить
           </button>
           <button
             className={styles.btn}
@@ -57,10 +67,11 @@ export default function ListItem({ client, setClients }) {
               setName("");
             }}
           >
-            Cancel
+            Отмена
           </button>
         </div>
       )}
+       
       <div className={styles.list__item_actions}>
         {!open && (
           <AiTwotoneEdit
@@ -70,8 +81,10 @@ export default function ListItem({ client, setClients }) {
             }}
           />
         )}
-        <AiFillDelete onClick={() => handleRemove(client._id)} />
+        <AiFillDelete onClick={ () => handleRemove(client._id)} />
+     
       </div>
     </li>
   );
 }
+   //() => handleRemove(client._id)} />

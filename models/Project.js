@@ -40,6 +40,14 @@ const projectSchema = new mongoose.Schema(
       unique: true,
       //lowercase: true,
     },
+    dateStart:{
+      type: Date,
+      required: false
+    },
+    dateEnd:{
+      type: Date,
+      required: false
+    },
     category: {
       type: ObjectId,
       required: true,

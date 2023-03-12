@@ -36,7 +36,7 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function Projects({ projects, categories }) {
+export default function Projects({ projects, categories, clients }) {
   const [expanded, setExpanded] = React.useState(false);
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -64,8 +64,8 @@ export default function Projects({ projects, categories }) {
               (<Card sx={{ maxWidth: 700 }} key={project._id}>
                 <CardHeader
                   avatar={
-                    <Avatar src="" sx={{ bgcolor: red[500] }} aria-label="recipe">
-                      БИП
+                    <Avatar src={project.client_docs.image} sx={{ bgcolor: red[500] }} aria-label="recipe">
+                      `${project.client_docs.name}`
                     </Avatar>
                   }
                   action={
@@ -73,7 +73,7 @@ export default function Projects({ projects, categories }) {
                       <MoreVertIcon />
                     </IconButton>
                   }
-                  title="Shrimp and Chorizo Paella"
+                  title= {project.client_docs.name}
                   subheader="September 14, 2016"
                 />
 
@@ -140,6 +140,7 @@ export default function Projects({ projects, categories }) {
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
   const categories = await db.collection("categories").find({}).toArray();
+  const clients = await db.collection("clients").find({}).toArray();
   const projects = await db
     .collection("projects")
     .aggregate([
@@ -156,6 +157,19 @@ export async function getServerSideProps() {
           path: "$category_docs",
         },
       },
+      {
+        $lookup: {
+          from: "clients",
+          localField: "client",
+          foreignField: "_id",
+          as: "client_docs",
+        },
+      },
+      {
+        $unwind: {
+          path: "$client_docs",
+        },
+      },
     ])
     .toArray();
 
@@ -163,6 +177,7 @@ export async function getServerSideProps() {
     props: {
       projects: JSON.parse(JSON.stringify(projects)),
       categories: JSON.parse(JSON.stringify(categories)),
+      clients: JSON.parse(JSON.stringify(clients))
     },
   };
 }
